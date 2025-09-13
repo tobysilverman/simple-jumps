@@ -9,6 +9,7 @@ function App() {
   const [strength, setStrength] = useState(12);
   const [height, setHeight] = useState(6);
   const [runningStart, setRunningStart] = useState(false);
+  const [showCalcModal, setShowCalcModal] = useState(false);
 
   const tabs = [
     { id: 0, name: 'Long Jump', type: 'long', buttonText: 'Long Jump' },
@@ -83,8 +84,20 @@ function App() {
                 <span className="distance-number">{jumpDistance}</span>
                 <span className="distance-unit">ft</span>
               </div>
-              <div className="jump-type">
-                {tabs[activeTab].name.toUpperCase()}
+              <div className="jump-type-wrapper">
+                <span className="jump-type">
+                  {tabs[activeTab].name.toUpperCase()}
+                </span>
+                <button
+                  className="info-icon-btn"
+                  onClick={() => setShowCalcModal(true)}
+                  aria-label="Show calculations"
+                >
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -145,12 +158,32 @@ function App() {
             </div>
           </div>
 
-          <div className="calculation-display">
+          <div className="calculation-display desktop-only">
             <div className="calculation-text">
               {getCalculationExplanation()}
             </div>
           </div>
         </div>
+
+        {showCalcModal && (
+          <div className="modal-overlay" onClick={() => setShowCalcModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <button
+                className="modal-close"
+                onClick={() => setShowCalcModal(false)}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+              <div className="modal-body">
+                <h3 className="modal-title">Calculation Details</h3>
+                <div className="modal-calculation-text">
+                  {getCalculationExplanation()}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className={`illustration-section ${tabs[activeTab].type === 'long' ? 'long-background' : ''} ${tabs[activeTab].type === 'high' ? 'high-background' : ''} ${tabs[activeTab].type === 'reach' ? 'reach-background' : ''}`}>
           {tabs[activeTab].type === 'long' && (
