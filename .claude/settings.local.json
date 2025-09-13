@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/tobysilverman/Desktop/**)",
+      "Bash(npm start)",
+      "Read(//opt/homebrew/bin/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
