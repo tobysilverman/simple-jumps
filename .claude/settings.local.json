@@ -3,7 +3,8 @@
     "allow": [
       "Read(//Users/tobysilverman/Desktop/**)",
       "Bash(npm start)",
-      "Read(//opt/homebrew/bin/**)"
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []
