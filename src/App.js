@@ -35,39 +35,79 @@ function App() {
 
   const jumpDistance = calculateJumpDistance();
 
-  const getCalculationExplanation = () => {
-    const strengthMod = Math.floor((strength - 10) / 2);
-    const strengthModText = strengthMod >= 0 ? `+${strengthMod}` : `${strengthMod}`;
-    
+  const getModalTitleAndDescription = () => {
     switch (tabs[activeTab].type) {
       case 'long':
         if (runningStart) {
-          return `${strength} (Strength score)\n\n= ${strength} ft (run-up met)\n\nMovement cost: ${strength} ft`;
+          return {
+            title: 'Running Long Jump',
+            description: 'With a running start, you can jump your strength score horizontally'
+          };
+        } else {
+          return {
+            title: 'Standing Long Jump',
+            description: 'Without a running start, you can jump half your strength score horizontally'
+          };
+        }
+      case 'high':
+        if (runningStart) {
+          return {
+            title: 'Running High Jump',
+            description: 'With a running start, you can jump vertically 3 plus your strength modifier'
+          };
+        } else {
+          return {
+            title: 'Standing High Jump',
+            description: 'Without a running start, you can jump vertically up to 3+your Strength Modifier divided by 2'
+          };
+        }
+      case 'reach':
+        return {
+          title: 'Reaching High Jump',
+          description: 'You can jump up and reach something that is 1.5 times your height + your High Jump'
+        };
+      default:
+        return { title: '', description: '' };
+    }
+  };
+
+  const getCalculationExplanation = () => {
+    const strengthMod = Math.floor((strength - 10) / 2);
+
+    switch (tabs[activeTab].type) {
+      case 'long':
+        if (runningStart) {
+          const movementCost = 10 + strength;
+          return `${strength} (Strength score)\n+ 10ft running start\n──────────────────────────\nTotal Long Jump = ${strength} ft\n\nMovement cost: ${movementCost} ft`;
         } else {
           const result = Math.floor(strength / 2);
-          return `${strength} (Strength score)\n\n÷ 2 (no run-up) → round down\n\n= ${result} ft\n\nMovement cost: ${result} ft`;
+          return `${strength} (Strength score)\n÷ 2 (no run-up)\n──────────────────────────\nTotal Long Jump = ${result} ft\n\nMovement cost: ${result} ft`;
         }
       case 'high':
         if (runningStart) {
           const result = 3 + strengthMod;
-          return `3 (base) + ${strengthMod} (Strength mod)\n\n= ${result} ft (run-up met)\n\nMovement cost: ${result} ft`;
+          const movementCost = 10 + Math.ceil(result);
+          return `3 (base) + ${strengthMod} (STR mod)\n+ 10ft running start\n──────────────────────────\nTotal High Jump = ${result} ft\n\nMovement cost: ${movementCost} ft`;
         } else {
           const baseCalc = 3 + strengthMod;
           const result = Math.floor(baseCalc / 2);
-          return `3 (base) + ${strengthMod} (Strength mod)\n\n= ${baseCalc}\n\n÷ 2 (no run-up) → round down\n\n= ${result} ft\n\nMovement cost: ${result} ft`;
+          const movementCost = Math.ceil(result);
+          return `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)\n──────────────────────────\nTotal High Jump = ${result} ft\n\nMovement cost: ${movementCost} ft`;
         }
       case 'reach':
         if (runningStart) {
           const jumpHeight = 3 + strengthMod;
           const reachAdd = Math.floor(height * 1.5);
           const total = jumpHeight + reachAdd;
-          return `Jump height = 3 + ${strengthMod} = ${jumpHeight} ft (run-up met)\n\nReach add = 1.5 × ${height} = ${reachAdd} ft\n\nTotal reachable height = ${jumpHeight} + ${reachAdd} = ${total} ft`;
+          const movementCost = 10 + Math.ceil(jumpHeight);
+          return `3 (base) + ${strengthMod} (STR mod)\n= ${jumpHeight} ft\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
         } else {
           const baseCalc = 3 + strengthMod;
           const jumpHeight = Math.floor(baseCalc / 2);
           const reachAdd = Math.floor(height * 1.5);
           const total = jumpHeight + reachAdd;
-          return `Base = 3 + ${strengthMod} = ${baseCalc}\n\nStanding: ÷ 2 → round down\n\nJump height = ${jumpHeight} ft\n\nReach add = 1.5 × ${height} = ${reachAdd} ft\n\nTotal reachable height = ${jumpHeight} + ${reachAdd} = ${total} ft`;
+          const movementCost = Math.ceil(jumpHeight);
+          return `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
         }
       default:
         return '';
@@ -80,25 +120,23 @@ function App() {
         <div className="controls-section">
           <div className="header-section">
             <div className="distance-display">
+              <button
+                className="info-icon-btn distance-info"
+                onClick={() => setShowCalcModal(true)}
+                aria-label="Show calculations"
+              >
+                <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
               <div className="distance-value">
                 <span className="distance-number">{jumpDistance}</span>
                 <span className="distance-unit">ft</span>
               </div>
-              <div className="jump-type-wrapper">
-                <span className="jump-type">
-                  {tabs[activeTab].name.toUpperCase()}
-                </span>
-                <button
-                  className="info-icon-btn"
-                  onClick={() => setShowCalcModal(true)}
-                  aria-label="Show calculations"
-                >
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
-              </div>
+              <span className="jump-type">
+                {tabs[activeTab].name.toUpperCase()}
+              </span>
             </div>
           </div>
 
@@ -157,12 +195,6 @@ function App() {
               </label>
             </div>
           </div>
-
-          <div className="calculation-display desktop-only">
-            <div className="calculation-text">
-              {getCalculationExplanation()}
-            </div>
-          </div>
         </div>
 
         {showCalcModal && (
@@ -176,7 +208,8 @@ function App() {
                 ×
               </button>
               <div className="modal-body">
-                <h3 className="modal-title">Calculation Details</h3>
+                <h3 className="modal-title">{getModalTitleAndDescription().title}</h3>
+                <p className="modal-description">{getModalTitleAndDescription().description}</p>
                 <div className="modal-calculation-text">
                   {getCalculationExplanation()}
                 </div>

@@ -4,7 +4,11 @@
       "Read(//Users/tobysilverman/Desktop/**)",
       "Bash(npm start)",
       "Read(//opt/homebrew/bin/**)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Read(//Users/tobysilverman/.claude/**)",
+      "Bash(claude mcp)",
+      "Bash(claude mcp:*)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []

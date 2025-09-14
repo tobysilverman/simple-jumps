@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/tobysilverman/Desktop/Code/simple-jumps/logs/.d4e31071b368a7eccd7d9b3870923dfd8a8a29f8-audit.json",
+    "files": [
+        {
+            "date": 1757825823052,
+            "name": "/Users/tobysilverman/Desktop/Code/simple-jumps/logs/mcp-puppeteer-2025-09-13.log",
+            "hash": "a83b88d9921d1ca2e69ee410bc5ed42dc064f56bab0da82785094be846e30947"
+        }
+    ],
+    "hashType": "sha256"
+}
