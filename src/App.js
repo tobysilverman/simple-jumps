@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import longJumpImage from './assets/images/LongJumpV1.png';
 import highJumpImage from './assets/images/High JumpV1.png';
 import reachingHighJumpImage from './assets/images/ReachingHighJumpV1.png';
+import orionImage from './assets/images/OrionEverlight.png';
 
 function App() {
   const [activeTab, setActiveTab] = useState(0);
@@ -10,6 +11,20 @@ function App() {
   const [height, setHeight] = useState(6);
   const [runningStart, setRunningStart] = useState(false);
   const [showCalcModal, setShowCalcModal] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showMenuItemModal, setShowMenuItemModal] = useState(false);
+  const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+  const [showMenuContentInPanel, setShowMenuContentInPanel] = useState(false);
+  const [magicItems, setMagicItems] = useState({
+    bootsOfSpringing: false,
+    placeholder1: false,
+    placeholder2: false
+  });
+  const [expandedItems, setExpandedItems] = useState({
+    bootsOfSpringing: false,
+    placeholder1: false,
+    placeholder2: false
+  });
 
   const tabs = [
     { id: 0, name: 'Long Jump', type: 'long', buttonText: 'Long Jump' },
@@ -19,18 +34,34 @@ function App() {
 
   const calculateJumpDistance = () => {
     const strengthMod = Math.floor((strength - 10) / 2);
-    
+    let distance = 0;
+
     switch (tabs[activeTab].type) {
       case 'long':
-        return runningStart ? strength : Math.floor(strength / 2);
+        distance = runningStart ? strength : Math.floor(strength / 2);
+        break;
       case 'high':
-        return runningStart ? (3 + strengthMod) : Math.floor((3 + strengthMod) / 2);
+        distance = runningStart ? (3 + strengthMod) : Math.floor((3 + strengthMod) / 2);
+        break;
       case 'reach':
         const highJump = runningStart ? (3 + strengthMod) : Math.floor((3 + strengthMod) / 2);
-        return highJump + Math.floor(height * 1.5);
+        distance = highJump + Math.floor(height * 1.5);
+        break;
       default:
-        return 0;
+        distance = 0;
     }
+
+    // Apply Boots of Springing and Striding multiplier
+    if (magicItems.bootsOfSpringing && tabs[activeTab].type !== 'reach') {
+      distance = distance * 3;
+    } else if (magicItems.bootsOfSpringing && tabs[activeTab].type === 'reach') {
+      // For reach, only multiply the jump height portion
+      const highJump = runningStart ? (3 + strengthMod) : Math.floor((3 + strengthMod) / 2);
+      const multipliedJump = highJump * 3;
+      distance = multipliedJump + Math.floor(height * 1.5);
+    }
+
+    return distance;
   };
 
   const jumpDistance = calculateJumpDistance();
@@ -73,49 +104,349 @@ function App() {
 
   const getCalculationExplanation = () => {
     const strengthMod = Math.floor((strength - 10) / 2);
+    const hasBoots = magicItems.bootsOfSpringing;
 
     switch (tabs[activeTab].type) {
       case 'long':
         if (runningStart) {
-          const movementCost = 10 + strength;
-          return `${strength} (Strength score)\n+ 10ft running start\n──────────────────────────\nTotal Long Jump = ${strength} ft\n\nMovement cost: ${movementCost} ft`;
+          const baseJump = strength;
+          const finalJump = hasBoots ? baseJump * 3 : baseJump;
+          const movementCost = 10 + finalJump;
+          let calc = `${strength} (Strength score)\n+ 10ft running start`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)`;
+          }
+          calc += `\n──────────────────────────\nTotal Long Jump = ${finalJump} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         } else {
-          const result = Math.floor(strength / 2);
-          return `${strength} (Strength score)\n÷ 2 (no run-up)\n──────────────────────────\nTotal Long Jump = ${result} ft\n\nMovement cost: ${result} ft`;
+          const baseJump = Math.floor(strength / 2);
+          const finalJump = hasBoots ? baseJump * 3 : baseJump;
+          const movementCost = finalJump;
+          let calc = `${strength} (Strength score)\n÷ 2 (no run-up)`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)`;
+          }
+          calc += `\n──────────────────────────\nTotal Long Jump = ${finalJump} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         }
       case 'high':
         if (runningStart) {
-          const result = 3 + strengthMod;
-          const movementCost = 10 + Math.ceil(result);
-          return `3 (base) + ${strengthMod} (STR mod)\n+ 10ft running start\n──────────────────────────\nTotal High Jump = ${result} ft\n\nMovement cost: ${movementCost} ft`;
+          const baseJump = 3 + strengthMod;
+          const finalJump = hasBoots ? baseJump * 3 : baseJump;
+          const movementCost = 10 + Math.ceil(finalJump);
+          let calc = `3 (base) + ${strengthMod} (STR mod)\n+ 10ft running start`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)`;
+          }
+          calc += `\n──────────────────────────\nTotal High Jump = ${finalJump} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         } else {
           const baseCalc = 3 + strengthMod;
-          const result = Math.floor(baseCalc / 2);
-          const movementCost = Math.ceil(result);
-          return `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)\n──────────────────────────\nTotal High Jump = ${result} ft\n\nMovement cost: ${movementCost} ft`;
+          const baseJump = Math.floor(baseCalc / 2);
+          const finalJump = hasBoots ? baseJump * 3 : baseJump;
+          const movementCost = Math.ceil(finalJump);
+          let calc = `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)`;
+          }
+          calc += `\n──────────────────────────\nTotal High Jump = ${finalJump} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         }
       case 'reach':
         if (runningStart) {
-          const jumpHeight = 3 + strengthMod;
+          const baseJumpHeight = 3 + strengthMod;
+          const jumpHeight = hasBoots ? baseJumpHeight * 3 : baseJumpHeight;
           const reachAdd = Math.floor(height * 1.5);
           const total = jumpHeight + reachAdd;
           const movementCost = 10 + Math.ceil(jumpHeight);
-          return `3 (base) + ${strengthMod} (STR mod)\n= ${jumpHeight} ft\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
+          let calc = `3 (base) + ${strengthMod} (STR mod)\n= ${baseJumpHeight} ft`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)\n= ${jumpHeight} ft`;
+          }
+          calc += `\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         } else {
           const baseCalc = 3 + strengthMod;
-          const jumpHeight = Math.floor(baseCalc / 2);
+          const baseJumpHeight = Math.floor(baseCalc / 2);
+          const jumpHeight = hasBoots ? baseJumpHeight * 3 : baseJumpHeight;
           const reachAdd = Math.floor(height * 1.5);
           const total = jumpHeight + reachAdd;
           const movementCost = Math.ceil(jumpHeight);
-          return `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
+          let calc = `3 (base) + ${strengthMod} (STR mod)\n÷ 2 (no run-up)`;
+          if (hasBoots) {
+            calc += `\n× 3 (Boots of Springing)`;
+          }
+          calc += `\n+ ${reachAdd} ft (reach: 1.5 × height)\n──────────────────────────\nTotal Reach = ${total} ft\n\nMovement cost: ${movementCost} ft`;
+          return calc;
         }
       default:
         return '';
     }
   };
 
+  const toggleItemExpansion = (itemKey) => {
+    setExpandedItems(prev => ({
+      ...prev,
+      [itemKey]: !prev[itemKey]
+    }));
+  };
+
+  const handleMenuItemClick = (item) => {
+    setSelectedMenuItem(item);
+    if (isMobile) {
+      setShowMenuItemModal(true);
+      setShowMenu(false);
+      // Ensure modal scrolls to top when opened
+      setTimeout(() => {
+        const modalBody = document.querySelector('.menu-item-modal-body');
+        if (modalBody) {
+          modalBody.scrollTop = 0;
+        }
+      }, 0);
+    } else {
+      setShowMenuContentInPanel(true);
+    }
+  };
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+    setShowMenuContentInPanel(false);
+    setSelectedMenuItem(null);
+  };
+
+  const menuItems = [
+    { id: 'magic-items', name: 'Jump Boosts' },
+    { id: 'official-rules', name: 'Rules' },
+    { id: 'about', name: 'About' }
+  ];
+
+  const mobileMenuItems = [
+    ...menuItems,
+    { id: 'download-app', name: 'Download App' }
+  ];
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const visibleMenuItems = isMobile ? mobileMenuItems : menuItems;
+
   return (
     <div className="app">
+      {/* Hamburger Menu Button - Mobile Only */}
+      {isMobile && (
+        <button
+          className="hamburger-btn"
+          onClick={() => setShowMenu(!showMenu)}
+          aria-label="Toggle menu"
+        >
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+          <span className="hamburger-line"></span>
+        </button>
+      )}
+
+      {/* Menu Overlay */}
+      {showMenu && (
+        <div className="menu-overlay" onClick={() => setShowMenu(false)}>
+          <div className="menu-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="menu-close"
+              onClick={() => setShowMenu(false)}
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+            <nav className="menu-nav">
+              {visibleMenuItems.map((item) => (
+                <button
+                  key={item.id}
+                  className="menu-item"
+                  onClick={() => handleMenuItemClick(item)}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Menu Item Modal */}
+      {showMenuItemModal && selectedMenuItem && (
+        <div className="modal-overlay" onClick={() => setShowMenuItemModal(false)}>
+          <div className="menu-item-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="menu-item-modal-header">
+              <h2 className="menu-item-modal-title">{selectedMenuItem.name}</h2>
+              <button
+                className="modal-close"
+                onClick={() => setShowMenuItemModal(false)}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
+            <div className="menu-item-modal-body">
+              {selectedMenuItem.id === 'official-rules' ? (
+                <div className="rules-content mobile-rules">
+                  <div className="rules-section">
+                    <h2 className="rules-section-title">Long Jump</h2>
+                    <p className="rules-text">
+                      When you make a long jump, you cover a number of feet up to your Strength score if you move at least 10 feet on foot immediately before the jump. When you make a standing long jump, you can leap only half that distance. Either way, each foot you clear on the jump costs a foot of movement.
+                    </p>
+                    <p className="rules-text">
+                      This rule assumes that the height of your jump doesn't matter, such as a jump across a stream or chasm. At your GM's option, you must succeed on a DC 10 Strength (Athletics) check to clear a low obstacle (no taller than a quarter of the jump's distance), such as a hedge or low wall. Otherwise, you hit it.
+                    </p>
+                    <p className="rules-text">
+                      When you land in difficult terrain, you must succeed on a DC 10 Dexterity (Acrobatics) check to land on your feet. Otherwise, you land prone.
+                    </p>
+                  </div>
+
+                  <div className="rules-section">
+                    <h2 className="rules-section-title">High Jump</h2>
+                    <p className="rules-text">
+                      When you make a high jump, you leap into the air a number of feet equal to 3 + your Strength modifier if you move at least 10 feet on foot immediately before the jump. When you make a standing high jump, you can jump only half that distance. Either way, each foot you clear on the jump costs a foot of movement. In some circumstances, your GM might allow you to make a Strength (Athletics) check to jump higher than you normally can.
+                    </p>
+                    <p className="rules-text">
+                      You can extend your arms half your height above yourself during the jump. Thus, you can reach above you a distance equal to the height of the jump plus 1½ times your height.
+                    </p>
+                  </div>
+                </div>
+              ) : selectedMenuItem.id === 'about' ? (
+                <div className="about-content mobile-about">
+                  <div className="about-mobile-layout">
+                    <img src={orionImage} alt="Toby Silverman" className="about-image-mobile" />
+                    <p className="about-text">
+                      My table had a tough time remembering the rules for jumping. Hope this helps yours.
+                    </p>
+                    <p className="about-text about-dedication">
+                      Dedicated to Bowser the Butcher; may he find peace — and remember how to jump.
+                    </p>
+                    <p className="about-text about-signature">
+                      Built with ❤️ in San Francisco by{' '}
+                      <a href="https://design.tobysilverman.com" target="_blank" rel="noopener noreferrer" className="about-link">
+                        Toby Silverman
+                      </a>.
+                    </p>
+                  </div>
+                </div>
+              ) : selectedMenuItem.id === 'magic-items' ? (
+                <div className="boons-content mobile-boons">
+                  <div className="boons-list">
+                    <div className="boon-item">
+                      <div className="boon-item-row">
+                        <div className="boon-item-content">
+                          <label className="boon-checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={magicItems.bootsOfSpringing}
+                              onChange={(e) => setMagicItems({...magicItems, bootsOfSpringing: e.target.checked})}
+                              className="boon-checkbox"
+                            />
+                            <span className="boon-custom-checkbox">
+                              <span className="boon-checkmark"></span>
+                            </span>
+                            <span className="boon-name">Boots of Springing and Striding</span>
+                          </label>
+                          {expandedItems.bootsOfSpringing && (
+                            <div className="boon-description">
+                              While you wear these boots, your walking speed becomes 30 feet, unless your walking speed is higher, and your speed isn't reduced if you are encumbered or wearing heavy armor. In addition, you can jump three times the normal distance, though you can't jump farther than your remaining movement would allow.
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          className={`boon-caret ${expandedItems.bootsOfSpringing ? 'expanded' : ''}`}
+                          onClick={() => toggleItemExpansion('bootsOfSpringing')}
+                          aria-label="Toggle description"
+                        >
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 8L10 12L14 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="boon-item">
+                      <div className="boon-item-row">
+                        <div className="boon-item-content">
+                          <label className="boon-checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={magicItems.placeholder1}
+                              onChange={(e) => setMagicItems({...magicItems, placeholder1: e.target.checked})}
+                              className="boon-checkbox"
+                              disabled
+                            />
+                            <span className="boon-custom-checkbox disabled">
+                              <span className="boon-checkmark"></span>
+                            </span>
+                            <span className="boon-name disabled">Ring of Jumping (Coming Soon)</span>
+                          </label>
+                          {expandedItems.placeholder1 && (
+                            <div className="boon-description">
+                              Coming soon...
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          className={`boon-caret ${expandedItems.placeholder1 ? 'expanded' : ''}`}
+                          onClick={() => toggleItemExpansion('placeholder1')}
+                          aria-label="Toggle description"
+                        >
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 8L10 12L14 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div className="boon-item">
+                      <div className="boon-item-row">
+                        <div className="boon-item-content">
+                          <label className="boon-checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={magicItems.placeholder2}
+                              onChange={(e) => setMagicItems({...magicItems, placeholder2: e.target.checked})}
+                              className="boon-checkbox"
+                              disabled
+                            />
+                            <span className="boon-custom-checkbox disabled">
+                              <span className="boon-checkmark"></span>
+                            </span>
+                            <span className="boon-name disabled">Jump Spell (Coming Soon)</span>
+                          </label>
+                          {expandedItems.placeholder2 && (
+                            <div className="boon-description">
+                              Coming soon...
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          className={`boon-caret ${expandedItems.placeholder2 ? 'expanded' : ''}`}
+                          onClick={() => toggleItemExpansion('placeholder2')}
+                          aria-label="Toggle description"
+                        >
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 8L10 12L14 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="menu-item-placeholder">Content Area</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <div className="main-card">
         <div className="controls-section">
           <div className="header-section">
@@ -195,6 +526,21 @@ function App() {
               </label>
             </div>
           </div>
+
+          {/* Desktop Menu Items in Left Panel */}
+          {!isMobile && (
+            <div className="menu-items-section">
+              {menuItems.map((item) => (
+                <button
+                  key={item.id}
+                  className={`panel-menu-item ${selectedMenuItem?.id === item.id && showMenuContentInPanel ? 'active' : ''}`}
+                  onClick={() => handleMenuItemClick(item)}
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {showCalcModal && (
@@ -219,28 +565,172 @@ function App() {
         )}
 
         <div className={`illustration-section ${tabs[activeTab].type === 'long' ? 'long-background' : ''} ${tabs[activeTab].type === 'high' ? 'high-background' : ''} ${tabs[activeTab].type === 'reach' ? 'reach-background' : ''}`}>
-          {tabs[activeTab].type === 'long' && (
-            <img 
-              src={longJumpImage} 
-              alt="Character performing a long jump across cliffs" 
-              className="jump-image"
-            />
-          )}
-          {tabs[activeTab].type === 'high' && (
-            <img 
-              src={highJumpImage} 
-              alt="Character performing a high jump" 
-              className="jump-image"
-              onError={(e) => console.error('Failed to load high-jump.png:', e)}
-              onLoad={() => console.log('Successfully loaded high-jump.png')}
-            />
-          )}
-          {tabs[activeTab].type === 'reach' && (
-            <img 
-              src={reachingHighJumpImage} 
-              alt="Character performing a reaching high jump" 
-              className="jump-image"
-            />
+          {/* Show menu content or jump illustration based on state */}
+          {showMenuContentInPanel && selectedMenuItem ? (
+            <div className="panel-content-container">
+              <button
+                className="panel-close-btn"
+                onClick={() => {
+                  setShowMenuContentInPanel(false);
+                  setSelectedMenuItem(null);
+                }}
+                aria-label="Close"
+              >
+                ×
+              </button>
+              <div className="panel-content">
+                {selectedMenuItem.id === 'official-rules' ? (
+                  <div className="rules-content">
+                    <h1 className="rules-main-title">Rules</h1>
+
+                    <div className="rules-section">
+                      <h2 className="rules-section-title">Long Jump</h2>
+                      <p className="rules-text">
+                        When you make a long jump, you cover a number of feet up to your Strength score if you move at least 10 feet on foot immediately before the jump. When you make a standing long jump, you can leap only half that distance. Either way, each foot you clear on the jump costs a foot of movement.
+                      </p>
+                      <p className="rules-text">
+                        This rule assumes that the height of your jump doesn't matter, such as a jump across a stream or chasm. At your GM's option, you must succeed on a DC 10 Strength (Athletics) check to clear a low obstacle (no taller than a quarter of the jump's distance), such as a hedge or low wall. Otherwise, you hit it.
+                      </p>
+                      <p className="rules-text">
+                        When you land in difficult terrain, you must succeed on a DC 10 Dexterity (Acrobatics) check to land on your feet. Otherwise, you land prone.
+                      </p>
+                    </div>
+
+                    <div className="rules-section">
+                      <h2 className="rules-section-title">High Jump</h2>
+                      <p className="rules-text">
+                        When you make a high jump, you leap into the air a number of feet equal to 3 + your Strength modifier if you move at least 10 feet on foot immediately before the jump. When you make a standing high jump, you can jump only half that distance. Either way, each foot you clear on the jump costs a foot of movement. In some circumstances, your GM might allow you to make a Strength (Athletics) check to jump higher than you normally can.
+                      </p>
+                      <p className="rules-text">
+                        You can extend your arms half your height above yourself during the jump. Thus, you can reach above you a distance equal to the height of the jump plus 1½ times your height.
+                      </p>
+                    </div>
+                  </div>
+                ) : selectedMenuItem.id === 'about' ? (
+                  <div className="about-content">
+                    <div className="about-columns">
+                      <div className="about-image-column">
+                        <img src={orionImage} alt="Toby Silverman" className="about-image" />
+                      </div>
+                      <div className="about-text-column">
+                        <h1 className="about-title">About</h1>
+                        <p className="about-text">
+                          My table had a tough time remembering the rules for jumping. Hope this helps yours.
+                        </p>
+                        <p className="about-text">
+                          Dedicated to Bowser the Butcher; may he find peace — and remember how to jump.
+                        </p>
+                        <p className="about-text about-signature">
+                          Built with ❤️ in San Francisco by{' '}
+                          <a href="https://design.tobysilverman.com" target="_blank" rel="noopener noreferrer" className="about-link">
+                            Toby Silverman
+                          </a>.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : selectedMenuItem.id === 'magic-items' ? (
+                  <div className="boons-content">
+                    <h1 className="boons-title">Jump Boosts</h1>
+                    <div className="boons-list">
+                      <div className="boon-item">
+                        <label className="boon-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={magicItems.bootsOfSpringing}
+                            onChange={(e) => setMagicItems({...magicItems, bootsOfSpringing: e.target.checked})}
+                            className="boon-checkbox"
+                          />
+                          <span className="boon-custom-checkbox">
+                            <span className="boon-checkmark"></span>
+                          </span>
+                          <span className="boon-name">Boots of Springing and Striding</span>
+                        </label>
+                        <div className="boon-info-icon" data-tooltip="While you wear these boots, your walking speed becomes 30 feet, unless your walking speed is higher, and your speed isn't reduced if you are encumbered or wearing heavy armor. In addition, you can jump three times the normal distance, though you can't jump farther than your remaining movement would allow.">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
+                            <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="boon-item">
+                        <label className="boon-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={magicItems.placeholder1}
+                            onChange={(e) => setMagicItems({...magicItems, placeholder1: e.target.checked})}
+                            className="boon-checkbox"
+                            disabled
+                          />
+                          <span className="boon-custom-checkbox disabled">
+                            <span className="boon-checkmark"></span>
+                          </span>
+                          <span className="boon-name disabled">Ring of Jumping (Coming Soon)</span>
+                        </label>
+                        <div className="boon-info-icon" data-tooltip="Coming soon...">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
+                            <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="boon-item">
+                        <label className="boon-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={magicItems.placeholder2}
+                            onChange={(e) => setMagicItems({...magicItems, placeholder2: e.target.checked})}
+                            className="boon-checkbox"
+                            disabled
+                          />
+                          <span className="boon-custom-checkbox disabled">
+                            <span className="boon-checkmark"></span>
+                          </span>
+                          <span className="boon-name disabled">Jump Spell (Coming Soon)</span>
+                        </label>
+                        <div className="boon-info-icon" data-tooltip="Coming soon...">
+                          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="2"/>
+                            <path d="M10 14V9M10 6V6.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="panel-content-title">{selectedMenuItem.name}</h2>
+                    <p className="panel-content-placeholder">Content Area for Selected Nav Item</p>
+                  </>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              {tabs[activeTab].type === 'long' && (
+                <img
+                  src={longJumpImage}
+                  alt="Character performing a long jump across cliffs"
+                  className="jump-image"
+                />
+              )}
+              {tabs[activeTab].type === 'high' && (
+                <img
+                  src={highJumpImage}
+                  alt="Character performing a high jump"
+                  className="jump-image"
+                  onError={(e) => console.error('Failed to load high-jump.png:', e)}
+                  onLoad={() => console.log('Successfully loaded high-jump.png')}
+                />
+              )}
+              {tabs[activeTab].type === 'reach' && (
+                <img
+                  src={reachingHighJumpImage}
+                  alt="Character performing a reaching high jump"
+                  className="jump-image"
+                />
+              )}
+            </>
           )}
         </div>
       </div>
@@ -250,7 +740,7 @@ function App() {
           <button
             key={tab.id}
             className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => handleTabClick(tab.id)}
           >
             {tab.buttonText}
           </button>
