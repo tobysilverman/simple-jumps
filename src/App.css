@@ -511,6 +511,75 @@
   margin: 20px;
 }
 
+/* Sprite Animation */
+.sprite-animation {
+  background-repeat: no-repeat;
+  background-size: 400% 400%; /* 4x4 grid */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.high-jump-sprite {
+  width: 600px;
+  height: 600px;
+}
+
+.high-jump-sprite.jump-animation {
+  animation: high-jump-frames 1.6s steps(1) 1;
+  animation-fill-mode: forwards;
+}
+
+.high-jump-sprite.jump-animation.hovering,
+.illustration-section:hover .high-jump-sprite.jump-animation {
+  animation-iteration-count: infinite;
+}
+
+.high-jump-sprite.idle-animation {
+  animation: swag-idle-frames 1.6s steps(1) infinite;
+  animation-fill-mode: forwards;
+  transform: scale(0.72);
+}
+
+@keyframes high-jump-frames {
+  0% { background-position: 0% 0%; }
+  6.25% { background-position: 33.333% 0%; }
+  12.5% { background-position: 66.666% 0%; }
+  18.75% { background-position: 100% 0%; }
+  25% { background-position: 0% 33.333%; }
+  31.25% { background-position: 33.333% 33.333%; }
+  37.5% { background-position: 66.666% 33.333%; }
+  43.75% { background-position: 100% 33.333%; }
+  50% { background-position: 0% 66.666%; }
+  56.25% { background-position: 33.333% 66.666%; }
+  62.5% { background-position: 66.666% 66.666%; }
+  68.75% { background-position: 100% 66.666%; }
+  75% { background-position: 0% 100%; }
+  81.25% { background-position: 33.333% 100%; }
+  87.5% { background-position: 66.666% 100%; }
+  93.75% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes swag-idle-frames {
+  0% { background-position: 0% 0%; }
+  6.25% { background-position: 33.333% 0%; }
+  12.5% { background-position: 66.666% 0%; }
+  18.75% { background-position: 100% 0%; }
+  25% { background-position: 0% 33.333%; }
+  31.25% { background-position: 33.333% 33.333%; }
+  37.5% { background-position: 66.666% 33.333%; }
+  43.75% { background-position: 100% 33.333%; }
+  50% { background-position: 0% 66.666%; }
+  56.25% { background-position: 33.333% 66.666%; }
+  62.5% { background-position: 66.666% 66.666%; }
+  68.75% { background-position: 100% 66.666%; }
+  75% { background-position: 0% 100%; }
+  81.25% { background-position: 33.333% 100%; }
+  87.5% { background-position: 66.666% 100%; }
+  93.75% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
 .illustration-placeholder {
   width: 80%;
   height: 80%;
@@ -1467,6 +1536,11 @@
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     margin: 10px;
+  }
+
+  .high-jump-sprite {
+    width: 500px;
+    height: 500px;
   }
 
   .header-section {

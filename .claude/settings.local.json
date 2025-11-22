@@ -12,7 +12,8 @@
       "mcp__filesystem__list_directory",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []

@@ -3,6 +3,8 @@ import { Sun, Moon } from 'phosphor-react';
 import './App.css';
 import longJumpImage from './assets/images/LongJumpV1.png';
 import highJumpImage from './assets/images/High JumpV1.png';
+import highJumpSprite from './assets/images/sprites/highJumpLow.png';
+import idleSprite from './assets/images/sprites/swagIdle.png';
 import reachingHighJumpImage from './assets/images/ReachingHighJumpV1.png';
 import orionImage from './assets/images/OrionEverlight.png';
 
@@ -31,6 +33,8 @@ function App() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme || 'light';
   });
+  const [highJumpAnimation, setHighJumpAnimation] = useState('jump');
+  const [isHovering, setIsHovering] = useState(false);
 
   const tabs = [
     { id: 0, name: 'Long Jump', type: 'long', buttonText: 'Long Jump' },
@@ -247,6 +251,22 @@ function App() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (tabs[activeTab].type === 'high') {
+      setHighJumpAnimation('jump');
+      setIsHovering(false);
+    }
+  }, [activeTab]);
+
+  // Preload sprite images to prevent blink on first transition
+  useEffect(() => {
+    const preloadImages = [highJumpSprite, idleSprite];
+    preloadImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
@@ -744,12 +764,28 @@ function App() {
                 />
               )}
               {tabs[activeTab].type === 'high' && (
-                <img
-                  src={highJumpImage}
-                  alt="Character performing a high jump"
-                  className="jump-image"
-                  onError={(e) => console.error('Failed to load high-jump.png:', e)}
-                  onLoad={() => console.log('Successfully loaded high-jump.png')}
+                <div
+                  className={`sprite-animation high-jump-sprite ${
+                    isHovering || highJumpAnimation === 'jump' ? 'jump-animation' : 'idle-animation'
+                  }`}
+                  style={{
+                    backgroundImage: `url(${
+                      isHovering || highJumpAnimation === 'jump' ? highJumpSprite : idleSprite
+                    })`
+                  }}
+                  onAnimationEnd={(e) => {
+                    if (e.animationName === 'high-jump-frames' && !isHovering) {
+                      setHighJumpAnimation('idle');
+                    }
+                  }}
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => {
+                    setIsHovering(false);
+                    setHighJumpAnimation('idle');
+                  }}
+                  onClick={() => setHighJumpAnimation('jump')}
+                  role="img"
+                  aria-label="Character performing a high jump animation"
                 />
               )}
               {tabs[activeTab].type === 'reach' && (
