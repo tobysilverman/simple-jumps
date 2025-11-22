@@ -1,0 +1,119 @@
+/* Typography System - Design System */
+
+/* Font Stack */
+:root {
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', 'Monaco', monospace;
+}
+
+/* Headings (Bricolage Grotesque Variable) */
+
+/* H1 - Hero/Page Title */
+.h1 {
+  font-family: var(--font-display);
+  font-size: 6rem;     /* 96px */
+  line-height: 1.04;   /* 100px */
+  font-weight: 700;
+  font-variation-settings: 'wght' 700, 'opsz' 96, 'wdth' 100;
+}
+
+/* H2 - Major Section */
+.h2 {
+  font-family: var(--font-display);
+  font-size: 4rem;     /* 64px */
+  line-height: 1.09;   /* 70px */
+  font-weight: 700;
+  font-variation-settings: 'wght' 700, 'opsz' 64, 'wdth' 100;
+}
+
+/* H3 - Section */
+.h3 {
+  font-family: var(--font-display);
+  font-size: 3rem;     /* 48px */
+  line-height: 1.15;   /* 55px */
+  font-weight: 600;
+  font-variation-settings: 'wght' 600, 'opsz' 48, 'wdth' 100;
+}
+
+/* H4 - Subsection */
+.h4 {
+  font-family: var(--font-display);
+  font-size: 2rem;     /* 32px */
+  line-height: 1.25;   /* 40px */
+  font-weight: 600;
+  font-variation-settings: 'wght' 600, 'opsz' 32, 'wdth' 100;
+}
+
+/* H5 - Minor Heading */
+.h5 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;   /* 24px */
+  line-height: 1.33;   /* 32px */
+  font-weight: 500;
+  font-variation-settings: 'wght' 500, 'opsz' 24, 'wdth' 100;
+}
+
+/* Body Text (IBM Plex Sans) */
+
+/* Large - Lead paragraphs */
+.body-large {
+  font-family: var(--font-body);
+  font-size: 1.125rem;  /* 18px */
+  line-height: 1.61;    /* 29px */
+  font-weight: 400;
+}
+
+/* Base - Standard content */
+.body-base {
+  font-family: var(--font-body);
+  font-size: 1rem;      /* 16px */
+  line-height: 1.5;     /* 24px */
+  font-weight: 400;
+}
+
+/* Small - UI text */
+.body-small {
+  font-family: var(--font-body);
+  font-size: 0.875rem;  /* 14px */
+  line-height: 1.43;    /* 20px */
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Tiny - Labels/metadata */
+.body-tiny {
+  font-family: var(--font-body);
+  font-size: 0.75rem;   /* 12px */
+  line-height: 1.33;    /* 16px */
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* Code (IBM Plex Mono) */
+
+/* Code Block */
+.code-base {
+  font-family: var(--font-mono);
+  font-size: 1rem;      /* 16px */
+  line-height: 1.5;     /* 24px */
+  font-weight: 400;
+}
+
+/* Inline Code */
+.code-small {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;  /* 14px */
+  line-height: 1.43;    /* 20px */
+  font-weight: 400;
+}
+
+/* Responsive Typography Adjustments */
+@media (max-width: 768px) {
+  .h1 { font-size: 4rem; }
+  .h2 { font-size: 3rem; }
+  .h3 { font-size: 2rem; }
+  .h4 { font-size: 1.5rem; }
+  .h5 { font-size: 1.25rem; }
+}
+

@@ -3,6 +3,10 @@
 ## Project Overview
 Simple Jumps is a React-based web application that calculates jump distances for tabletop RPG games (like D&D 5e). It provides calculators for long jumps, high jumps, and reaching high jumps based on character attributes.
 
+## Design System Reference
+For typography, colors, components, and patterns:
+→ `/design-system/design_system.md`
+
 ## Tech Stack
 - **Framework**: React 19.1.1
 - **Build Tool**: Create React App (react-scripts 5.0.1)
@@ -368,5 +372,3 @@ Produce a 1-screen Diagnostic Report: current DOM, computed layout, single culpr
 Then wait for a clarified goal or permission to change the layout system.
 
 Use this playbook every time you alter positioning. Keep changes minimal, measurable, and final.
-
-ChatGPT can make mistakes. Check important info.

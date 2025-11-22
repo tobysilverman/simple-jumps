@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.c0dba792.css",
+    "main.js": "/static/js/main.5765d74d.js",
+    "static/js/453.73d2406d.chunk.js": "/static/js/453.73d2406d.chunk.js",
+    "static/media/High JumpV1.png": "/static/media/High JumpV1.4daa906b625781a5358d.png",
+    "static/media/ReachingHighJumpV1.png": "/static/media/ReachingHighJumpV1.99765779edb5946e7363.png",
+    "static/media/LongJumpV1.png": "/static/media/LongJumpV1.fde0067942183dbf1647.png",
+    "static/media/OrionEverlight.png": "/static/media/OrionEverlight.cbdde22149f46fe05c7c.png",
+    "index.html": "/index.html",
+    "main.c0dba792.css.map": "/static/css/main.c0dba792.css.map",
+    "main.5765d74d.js.map": "/static/js/main.5765d74d.js.map",
+    "453.73d2406d.chunk.js.map": "/static/js/453.73d2406d.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c0dba792.css",
+    "static/js/main.5765d74d.js"
+  ]
+}

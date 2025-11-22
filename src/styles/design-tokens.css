@@ -1,0 +1,116 @@
+/* Design System Tokens - Simple Jumps */
+
+/* Color System - Light Theme */
+:root {
+  /* Primary Accents (Use Sparingly - 5% rule) */
+  --color-primary: #1886E2;      /* Electric Blue */
+  --color-danger: #FD5250;        /* Coral Red */
+  --color-warning: #F5B800;       /* Golden Yellow */
+  
+  /* Neutral Foundation (95% rule) */
+  --color-bg: #FDFBF7;            /* Cream */
+  --color-surface: #FFFEF9;        /* Warm White */
+  --color-border: #E8E3DB;        /* Light Warm Gray */
+  --color-text-secondary: #8F8678; /* Medium Warm Gray */
+  --color-text-primary: #4A4540;  /* Dark Warm Gray */
+  --color-text-emphasis: #1A1816; /* Warm Black */
+
+  /* shadcn/ui CSS Variables */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
+
+  /* Spacing System - 8px base unit */
+  --space-1: 0.5rem;   /* 8px */
+  --space-2: 1rem;     /* 16px */
+  --space-3: 1.5rem;    /* 24px */
+  --space-4: 2rem;     /* 32px */
+  --space-5: 2.5rem;   /* 40px */
+  --space-6: 3rem;     /* 48px */
+  --space-8: 4rem;     /* 64px */
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;  /* 4px */
+  --radius-md: 0.5rem;  /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+
+  /* Breakpoints */
+  --breakpoint-mobile: 375px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1440px;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Primary Accents (Adjusted for Dark) */
+  --color-primary: #5BA3F5;       /* Sky Blue */
+  --color-danger: #FF6B6B;        /* Bright Coral */
+  --color-warning: #FFD93D;       /* Sunshine Yellow */
+  
+  /* Neutral Foundation */
+  --color-bg: #2E2A28;            /* Dark Brown */
+  --color-surface: #3D3835;       /* Elevated Dark */
+  --color-border: #5A524D;        /* Medium Brown */
+  --color-text-secondary: #B8AFA7; /* Light Brown */
+  --color-text-primary: #E8E3DB;  /* Warm Light Gray */
+  --color-text-emphasis: #FDFBF7; /* Off White */
+
+  /* shadcn/ui CSS Variables - Dark Mode */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+

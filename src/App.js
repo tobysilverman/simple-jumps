@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Sun, Moon } from 'phosphor-react';
 import './App.css';
 import longJumpImage from './assets/images/LongJumpV1.png';
 import highJumpImage from './assets/images/High JumpV1.png';
@@ -24,6 +25,11 @@ function App() {
     bootsOfSpringing: false,
     placeholder1: false,
     placeholder2: false
+  });
+  const [theme, setTheme] = useState(() => {
+    // Check localStorage for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
   });
 
   const tabs = [
@@ -236,10 +242,33 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Apply theme to document element
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  };
+
   const visibleMenuItems = isMobile ? mobileMenuItems : menuItems;
 
   return (
     <div className="app">
+      {/* Theme Toggle Button - Fixed Top Right */}
+      <button
+        className="theme-toggle-btn"
+        onClick={toggleTheme}
+        aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+      >
+        {theme === 'light' ? (
+          <Moon size={20} weight="fill" />
+        ) : (
+          <Sun size={20} weight="fill" />
+        )}
+      </button>
+
       {/* Hamburger Menu Button - Mobile Only */}
       {isMobile && (
         <button
@@ -554,8 +583,8 @@ function App() {
                 ×
               </button>
               <div className="modal-body">
-                <h3 className="modal-title">{getModalTitleAndDescription().title}</h3>
-                <p className="modal-description">{getModalTitleAndDescription().description}</p>
+                <h3 className="modal-title h4">{getModalTitleAndDescription().title}</h3>
+                <p className="modal-description body-base">{getModalTitleAndDescription().description}</p>
                 <div className="modal-calculation-text">
                   {getCalculationExplanation()}
                 </div>
@@ -581,10 +610,10 @@ function App() {
               <div className="panel-content">
                 {selectedMenuItem.id === 'official-rules' ? (
                   <div className="rules-content">
-                    <h1 className="rules-main-title">Rules</h1>
+                    <h1 className="rules-main-title h2">Rules</h1>
 
                     <div className="rules-section">
-                      <h2 className="rules-section-title">Long Jump</h2>
+                      <h2 className="rules-section-title h5">Long Jump</h2>
                       <p className="rules-text">
                         When you make a long jump, you cover a number of feet up to your Strength score if you move at least 10 feet on foot immediately before the jump. When you make a standing long jump, you can leap only half that distance. Either way, each foot you clear on the jump costs a foot of movement.
                       </p>
@@ -597,7 +626,7 @@ function App() {
                     </div>
 
                     <div className="rules-section">
-                      <h2 className="rules-section-title">High Jump</h2>
+                      <h2 className="rules-section-title h5">High Jump</h2>
                       <p className="rules-text">
                         When you make a high jump, you leap into the air a number of feet equal to 3 + your Strength modifier if you move at least 10 feet on foot immediately before the jump. When you make a standing high jump, you can jump only half that distance. Either way, each foot you clear on the jump costs a foot of movement. In some circumstances, your GM might allow you to make a Strength (Athletics) check to jump higher than you normally can.
                       </p>
@@ -613,7 +642,7 @@ function App() {
                         <img src={orionImage} alt="Toby Silverman" className="about-image" />
                       </div>
                       <div className="about-text-column">
-                        <h1 className="about-title">About</h1>
+                        <h1 className="about-title h2">About</h1>
                         <p className="about-text">
                           My table had a tough time remembering the rules for jumping. Hope this helps yours.
                         </p>
@@ -631,7 +660,7 @@ function App() {
                   </div>
                 ) : selectedMenuItem.id === 'magic-items' ? (
                   <div className="boons-content">
-                    <h1 className="boons-title">Jump Boosts</h1>
+                    <h1 className="boons-title h2">Jump Boosts</h1>
                     <div className="boons-list">
                       <div className="boon-item">
                         <label className="boon-checkbox-label">

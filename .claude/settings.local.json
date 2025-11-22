@@ -9,7 +9,10 @@
       "Bash(claude mcp)",
       "Bash(claude mcp:*)",
       "Bash(npm uninstall:*)",
-      "mcp__filesystem__list_directory"
+      "mcp__filesystem__list_directory",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
