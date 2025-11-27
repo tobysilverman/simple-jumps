@@ -5,6 +5,10 @@ import longJumpImage from './assets/images/LongJumpV1.png';
 import highJumpImage from './assets/images/High JumpV1.png';
 import highJumpSprite from './assets/images/sprites/highJumpLow.png';
 import idleSprite from './assets/images/sprites/swagIdle.png';
+import longJumpSprite from './assets/images/sprites/longJumpRunning.png';
+import leftCliff from './assets/images/leftCliff.png';
+import rightCliff from './assets/images/rightCliff.png';
+import backgroundMountain from './assets/images/backgroundMountain.png';
 import reachingHighJumpImage from './assets/images/ReachingHighJumpV1.png';
 import orionImage from './assets/images/OrionEverlight.png';
 
@@ -261,7 +265,7 @@ function App() {
 
   // Preload sprite images to prevent blink on first transition
   useEffect(() => {
-    const preloadImages = [highJumpSprite, idleSprite];
+    const preloadImages = [highJumpSprite, idleSprite, longJumpSprite];
     preloadImages.forEach(src => {
       const img = new Image();
       img.src = src;
@@ -757,11 +761,29 @@ function App() {
           ) : (
             <>
               {tabs[activeTab].type === 'long' && (
-                <img
-                  src={longJumpImage}
-                  alt="Character performing a long jump across cliffs"
-                  className="jump-image"
-                />
+                <>
+                  <img
+                    src={backgroundMountain}
+                    alt="Mountain background"
+                    className="background-mountain"
+                  />
+                  <img
+                    src={leftCliff}
+                    alt="Left cliff edge"
+                    className="left-cliff"
+                  />
+                  <div
+                    className="sprite-animation long-jump-sprite"
+                    style={{ backgroundImage: `url(${longJumpSprite})` }}
+                    role="img"
+                    aria-label="Character performing a long jump animation"
+                  />
+                  <img
+                    src={rightCliff}
+                    alt="Right cliff edge"
+                    className="right-cliff"
+                  />
+                </>
               )}
               {tabs[activeTab].type === 'high' && (
                 <div

@@ -13,7 +13,12 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(git add:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(sips:*)",
+      "Bash(identify:*)",
+      "mcp__filesystem__get_file_info",
+      "mcp__filesystem__read_media_file",
+      "mcp__filesystem__read_text_file"
     ],
     "deny": [],
     "ask": []
