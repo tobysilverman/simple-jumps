@@ -4,6 +4,7 @@ import './App.css';
 import longJumpImage from './assets/images/LongJumpV1.png';
 import highJumpImage from './assets/images/High JumpV1.png';
 import highJumpSprite from './assets/images/sprites/highJumpLow.png';
+import highJumpHover from './assets/images/sprites/highJumpHover.png';
 import idleSprite from './assets/images/sprites/swagIdle.png';
 import longJumpSprite from './assets/images/sprites/longJumpRunning.png';
 import leftCliff from './assets/images/leftCliff.png';
@@ -37,8 +38,7 @@ function App() {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme || 'light';
   });
-  const [highJumpAnimation, setHighJumpAnimation] = useState('jump');
-  const [isHovering, setIsHovering] = useState(false);
+  const [highJumpPhase, setHighJumpPhase] = useState('jumping');
 
   const tabs = [
     { id: 0, name: 'Long Jump', type: 'long', buttonText: 'Long Jump' },
@@ -256,21 +256,25 @@ function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  useEffect(() => {
-    if (tabs[activeTab].type === 'high') {
-      setHighJumpAnimation('jump');
-      setIsHovering(false);
-    }
-  }, [activeTab]);
-
   // Preload sprite images to prevent blink on first transition
   useEffect(() => {
-    const preloadImages = [highJumpSprite, idleSprite, longJumpSprite];
+    const preloadImages = [highJumpSprite, highJumpHover, idleSprite, longJumpSprite];
     preloadImages.forEach(src => {
       const img = new Image();
       img.src = src;
     });
   }, []);
+
+  // High jump animation: play ascend once, then switch to hover
+  useEffect(() => {
+    if (tabs[activeTab].type === 'high') {
+      setHighJumpPhase('jumping');
+      const timer = setTimeout(() => {
+        setHighJumpPhase('hovering');
+      }, 1400); // 14 frames * 0.1s/frame
+      return () => clearTimeout(timer);
+    }
+  }, [activeTab]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
@@ -786,29 +790,25 @@ function App() {
                 </>
               )}
               {tabs[activeTab].type === 'high' && (
-                <div
-                  className={`sprite-animation high-jump-sprite ${
-                    isHovering || highJumpAnimation === 'jump' ? 'jump-animation' : 'idle-animation'
-                  }`}
-                  style={{
-                    backgroundImage: `url(${
-                      isHovering || highJumpAnimation === 'jump' ? highJumpSprite : idleSprite
-                    })`
-                  }}
-                  onAnimationEnd={(e) => {
-                    if (e.animationName === 'high-jump-frames' && !isHovering) {
-                      setHighJumpAnimation('idle');
-                    }
-                  }}
-                  onMouseEnter={() => setIsHovering(true)}
-                  onMouseLeave={() => {
-                    setIsHovering(false);
-                    setHighJumpAnimation('idle');
-                  }}
-                  onClick={() => setHighJumpAnimation('jump')}
-                  role="img"
-                  aria-label="Character performing a high jump animation"
-                />
+                <div className="high-jump-container">
+                  {/* Ascend sprite - visible during jumping phase */}
+                  <div
+                    className={`sprite-animation high-jump-sprite high-jump-ascend-layer ${
+                      highJumpPhase === 'jumping' ? 'visible' : 'hidden'
+                    } ${highJumpPhase === 'jumping' ? 'ascend-animation' : ''}`}
+                    style={{ backgroundImage: `url(${highJumpSprite})` }}
+                    role="img"
+                    aria-label="Character performing a high jump animation"
+                  />
+                  {/* Hover sprite - visible during hovering phase */}
+                  <div
+                    className={`sprite-animation high-jump-sprite high-jump-hover-layer ${
+                      highJumpPhase === 'hovering' ? 'visible' : 'hidden'
+                    } ${highJumpPhase === 'hovering' ? 'hover-animation' : ''}`}
+                    style={{ backgroundImage: `url(${highJumpHover})` }}
+                    aria-hidden="true"
+                  />
+                </div>
               )}
               {tabs[activeTab].type === 'reach' && (
                 <img

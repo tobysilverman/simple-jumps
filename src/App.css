@@ -496,7 +496,39 @@
 }
 
 .illustration-section.high-background {
-  background: var(--color-surface);
+  background: #FFF;
+}
+
+.illustration-section.high-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/images/Krafty-Kuts-Texture-Compressed.jpg');
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  opacity: 0.8;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.illustration-section.high-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('./assets/images/Krafty-Kuts-Highlight-Compressed.jpg');
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: screen;
+  opacity: 0.25;
+  z-index: 11;
+  pointer-events: none;
 }
 
 .illustration-section.reach-background {
@@ -519,19 +551,47 @@
   image-rendering: crisp-edges;
 }
 
+/* Container for layered sprites */
+.high-jump-container {
+  position: relative;
+  width: 544px;
+  height: 736px;
+  z-index: 1;
+}
+
 .high-jump-sprite {
-  width: 600px;
-  height: 600px;
+  width: 544px;
+  height: 736px;
+  background-size: 500% 500%; /* 5x5 grid for 25 frames */
+}
+
+/* Layer positioning */
+.high-jump-ascend-layer,
+.high-jump-hover-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Visibility control */
+.high-jump-sprite.visible {
+  opacity: 1;
+}
+
+.high-jump-sprite.hidden {
+  opacity: 0;
 }
 
 .high-jump-sprite.jump-animation {
-  animation: high-jump-frames 1.6s steps(1) 1;
-  animation-fill-mode: forwards;
+  animation: high-jump-frames 2.5s steps(1) infinite;
 }
 
-.high-jump-sprite.jump-animation.hovering,
-.illustration-section:hover .high-jump-sprite.jump-animation {
-  animation-iteration-count: infinite;
+.high-jump-sprite.ascend-animation {
+  animation: high-jump-ascend 1.4s steps(1) forwards;
+}
+
+.high-jump-sprite.hover-animation {
+  animation: high-jump-hover-frames 2.5s steps(1) infinite;
 }
 
 .high-jump-sprite.idle-animation {
@@ -550,6 +610,7 @@
   z-index: 0;
   pointer-events: none;
 }
+
 
 .left-cliff {
   position: absolute;
@@ -584,22 +645,91 @@
 }
 
 @keyframes high-jump-frames {
+  /* 5x5 grid, 25 frames */
+  /* Row 1 */
   0% { background-position: 0% 0%; }
-  6.25% { background-position: 33.333% 0%; }
-  12.5% { background-position: 66.666% 0%; }
-  18.75% { background-position: 100% 0%; }
-  25% { background-position: 0% 33.333%; }
-  31.25% { background-position: 33.333% 33.333%; }
-  37.5% { background-position: 66.666% 33.333%; }
-  43.75% { background-position: 100% 33.333%; }
-  50% { background-position: 0% 66.666%; }
-  56.25% { background-position: 33.333% 66.666%; }
-  62.5% { background-position: 66.666% 66.666%; }
-  68.75% { background-position: 100% 66.666%; }
-  75% { background-position: 0% 100%; }
-  81.25% { background-position: 33.333% 100%; }
-  87.5% { background-position: 66.666% 100%; }
-  93.75% { background-position: 100% 100%; }
+  4% { background-position: 25% 0%; }
+  8% { background-position: 50% 0%; }
+  12% { background-position: 75% 0%; }
+  16% { background-position: 100% 0%; }
+  /* Row 2 */
+  20% { background-position: 0% 25%; }
+  24% { background-position: 25% 25%; }
+  28% { background-position: 50% 25%; }
+  32% { background-position: 75% 25%; }
+  36% { background-position: 100% 25%; }
+  /* Row 3 */
+  40% { background-position: 0% 50%; }
+  44% { background-position: 25% 50%; }
+  48% { background-position: 50% 50%; }
+  52% { background-position: 75% 50%; }
+  56% { background-position: 100% 50%; }
+  /* Row 4 */
+  60% { background-position: 0% 75%; }
+  64% { background-position: 25% 75%; }
+  68% { background-position: 50% 75%; }
+  72% { background-position: 75% 75%; }
+  76% { background-position: 100% 75%; }
+  /* Row 5 */
+  80% { background-position: 0% 100%; }
+  84% { background-position: 25% 100%; }
+  88% { background-position: 50% 100%; }
+  92% { background-position: 75% 100%; }
+  96% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes high-jump-ascend {
+  /* Frames 1-14 only, plays once and holds at frame 14 (peak) */
+  0% { background-position: 0% 0%; }
+  7.14% { background-position: 25% 0%; }
+  14.29% { background-position: 50% 0%; }
+  21.43% { background-position: 75% 0%; }
+  28.57% { background-position: 100% 0%; }
+  35.71% { background-position: 0% 25%; }
+  42.86% { background-position: 25% 25%; }
+  50% { background-position: 50% 25%; }
+  57.14% { background-position: 75% 25%; }
+  64.29% { background-position: 100% 25%; }
+  71.43% { background-position: 0% 50%; }
+  78.57% { background-position: 25% 50%; }
+  85.71% { background-position: 50% 50%; }
+  92.86% { background-position: 75% 50%; }
+  100% { background-position: 75% 50%; }
+}
+
+@keyframes high-jump-hover-frames {
+  /* 5x5 grid, 25 frames */
+  /* Row 1 */
+  0% { background-position: 0% 0%; }
+  4% { background-position: 25% 0%; }
+  8% { background-position: 50% 0%; }
+  12% { background-position: 75% 0%; }
+  16% { background-position: 100% 0%; }
+  /* Row 2 */
+  20% { background-position: 0% 25%; }
+  24% { background-position: 25% 25%; }
+  28% { background-position: 50% 25%; }
+  32% { background-position: 75% 25%; }
+  36% { background-position: 100% 25%; }
+  /* Row 3 */
+  40% { background-position: 0% 50%; }
+  44% { background-position: 25% 50%; }
+  48% { background-position: 50% 50%; }
+  52% { background-position: 75% 50%; }
+  56% { background-position: 100% 50%; }
+  /* Row 4 */
+  60% { background-position: 0% 75%; }
+  64% { background-position: 25% 75%; }
+  68% { background-position: 50% 75%; }
+  72% { background-position: 75% 75%; }
+  76% { background-position: 100% 75%; }
+  /* Row 5 */
+  80% { background-position: 0% 100%; }
+  84% { background-position: 25% 100%; }
+  88% { background-position: 50% 100%; }
+  92% { background-position: 75% 100%; }
+  96% { background-position: 100% 100%; }
   100% { background-position: 0% 0%; }
 }
 
@@ -1636,9 +1766,14 @@
     margin: 10px;
   }
 
+  .high-jump-container {
+    width: 500px;
+    height: 676px;
+  }
+
   .high-jump-sprite {
     width: 500px;
-    height: 500px;
+    height: 676px;
   }
 
   .long-jump-sprite {
