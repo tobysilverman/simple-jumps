@@ -553,21 +553,38 @@
 
 /* Container for layered sprites */
 .high-jump-container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: flex-end;
   width: 544px;
-  height: 736px;
   z-index: 1;
+  margin-bottom: 24px;
+}
+
+.high-jump-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: -200px;
+}
+
+.jump-line {
+  display: block;
+  width: 50%;
+  height: auto;
 }
 
 .high-jump-sprite {
   width: 544px;
   height: 736px;
   background-size: 500% 500%; /* 5x5 grid for 25 frames */
+  margin-top: 64px;
 }
 
 /* Layer positioning */
-.high-jump-ascend-layer,
-.high-jump-hover-layer {
+.high-jump-ascend-layer {
   position: absolute;
   top: 0;
   left: 0;

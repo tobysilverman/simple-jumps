@@ -18,7 +18,14 @@
       "Bash(identify:*)",
       "mcp__filesystem__get_file_info",
       "mcp__filesystem__read_media_file",
-      "mcp__filesystem__read_text_file"
+      "mcp__filesystem__read_text_file",
+      "Bash(lsof:*)",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_snapshot",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__hover"
     ],
     "deny": [],
     "ask": []

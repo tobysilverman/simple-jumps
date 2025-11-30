@@ -12,6 +12,12 @@ import rightCliff from './assets/images/rightCliff.png';
 import backgroundMountain from './assets/images/backgroundMountain.png';
 import reachingHighJumpImage from './assets/images/ReachingHighJumpV1.png';
 import orionImage from './assets/images/OrionEverlight.png';
+import lineImage from './assets/images/line.png';
+
+// High jump scaling constants
+const MAX_CONTAINER_HEIGHT = 850;
+const LINE_HEIGHT = 163;
+const CHARACTER_HEIGHT = 736;
 
 function App() {
   const [activeTab, setActiveTab] = useState(0);
@@ -79,6 +85,15 @@ function App() {
   };
 
   const jumpDistance = calculateJumpDistance();
+
+  // Calculate scale to fit high jump content in container
+  const getHighJumpScale = () => {
+    const baseScale = 1.54;
+    const totalLinesHeight = jumpDistance * LINE_HEIGHT;
+    const totalContentHeight = CHARACTER_HEIGHT + totalLinesHeight;
+    if (totalContentHeight <= MAX_CONTAINER_HEIGHT) return baseScale;
+    return (MAX_CONTAINER_HEIGHT / totalContentHeight) * baseScale;
+  };
 
   const getModalTitleAndDescription = () => {
     switch (tabs[activeTab].type) {
@@ -265,14 +280,10 @@ function App() {
     });
   }, []);
 
-  // High jump animation: play ascend once, then switch to hover
+  // High jump animation: immediately show hover
   useEffect(() => {
     if (tabs[activeTab].type === 'high') {
-      setHighJumpPhase('jumping');
-      const timer = setTimeout(() => {
-        setHighJumpPhase('hovering');
-      }, 1400); // 14 frames * 0.1s/frame
-      return () => clearTimeout(timer);
+      setHighJumpPhase('hovering');
     }
   }, [activeTab]);
 
@@ -790,24 +801,21 @@ function App() {
                 </>
               )}
               {tabs[activeTab].type === 'high' && (
-                <div className="high-jump-container">
-                  {/* Ascend sprite - visible during jumping phase */}
+                <div
+                  className="high-jump-container"
+                  style={{ transform: `scale(${getHighJumpScale()})`, transformOrigin: 'bottom center' }}
+                >
                   <div
-                    className={`sprite-animation high-jump-sprite high-jump-ascend-layer ${
-                      highJumpPhase === 'jumping' ? 'visible' : 'hidden'
-                    } ${highJumpPhase === 'jumping' ? 'ascend-animation' : ''}`}
-                    style={{ backgroundImage: `url(${highJumpSprite})` }}
+                    className="sprite-animation high-jump-sprite high-jump-hover-layer visible hover-animation"
+                    style={{ backgroundImage: `url(${highJumpHover})` }}
                     role="img"
                     aria-label="Character performing a high jump animation"
                   />
-                  {/* Hover sprite - visible during hovering phase */}
-                  <div
-                    className={`sprite-animation high-jump-sprite high-jump-hover-layer ${
-                      highJumpPhase === 'hovering' ? 'visible' : 'hidden'
-                    } ${highJumpPhase === 'hovering' ? 'hover-animation' : ''}`}
-                    style={{ backgroundImage: `url(${highJumpHover})` }}
-                    aria-hidden="true"
-                  />
+                  <div className="high-jump-lines">
+                    {Array(jumpDistance).fill().map((_, i) => (
+                      <img key={i} src={lineImage} alt="" className="jump-line" />
+                    ))}
+                  </div>
                 </div>
               )}
               {tabs[activeTab].type === 'reach' && (
